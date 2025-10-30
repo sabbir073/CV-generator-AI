@@ -43,49 +43,150 @@ export function ResumeThemeProvider({ children }: ResumeThemeProviderProps) {
     // Spacing
     '--resume-section-spacing': `${spacingSettings?.sectionSpacing || 24}px`,
     '--resume-item-spacing': `${spacingSettings?.itemSpacing || 12}px`,
-    '--resume-padding': `${spacingSettings?.padding || 16}px`,
+
+    // Padding (top, bottom, left, right)
+    '--resume-padding-top': `${spacingSettings?.paddingTop || 50}px`,
+    '--resume-padding-bottom': `${spacingSettings?.paddingBottom || 50}px`,
+    '--resume-padding-left': `${spacingSettings?.paddingLeft || 50}px`,
+    '--resume-padding-right': `${spacingSettings?.paddingRight || 50}px`,
   } as React.CSSProperties
 
   return (
     <>
       <style jsx global>{`
+        /* CSS @page rules for consistent PDF pagination */
+        @page {
+          margin: 0;
+          size: A4;
+        }
+
         /* TYPOGRAPHY - Apply to all templates */
-        .resume-theme-wrapper {
+        .resume-theme-wrapper,
+        .resume-theme-wrapper *,
+        .resume-theme-wrapper h1,
+        .resume-theme-wrapper h2,
+        .resume-theme-wrapper h3,
+        .resume-theme-wrapper h4,
+        .resume-theme-wrapper p,
+        .resume-theme-wrapper span,
+        .resume-theme-wrapper div {
           font-family: var(--resume-font-family) !important;
           letter-spacing: var(--resume-letter-spacing) !important;
         }
 
-        /* Heading sizes */
-        .resume-theme-wrapper h1,
-        .resume-theme-wrapper .text-5xl,
-        .resume-theme-wrapper .text-4xl,
-        .resume-theme-wrapper .text-3xl {
+        /* Ensure consistent box-sizing for all elements */
+        .resume-theme-wrapper * {
+          box-sizing: border-box;
+        }
+
+        /* PAGE PADDING - Dynamic padding system */
+        /* Override ALL template padding with custom values */
+
+        /* Single column templates - Apply padding to root div */
+        .resume-theme-wrapper > div:not(.flex) {
+          padding-top: var(--resume-padding-top) !important;
+          padding-bottom: var(--resume-padding-bottom) !important;
+          padding-left: var(--resume-padding-left) !important;
+          padding-right: var(--resume-padding-right) !important;
+          box-decoration-break: clone;
+          -webkit-box-decoration-break: clone;
+        }
+
+        /* Flex layout templates - Apply padding to child columns */
+        .resume-theme-wrapper > div.flex {
+          /* Remove padding from flex container */
+          padding: 0 !important;
+        }
+
+        .resume-theme-wrapper > div.flex > div {
+          /* Apply top/bottom padding to all columns */
+          padding-top: var(--resume-padding-top) !important;
+          padding-bottom: var(--resume-padding-bottom) !important;
+          box-decoration-break: clone;
+          -webkit-box-decoration-break: clone;
+        }
+
+        /* First column (sidebar) - add left padding */
+        .resume-theme-wrapper > div.flex > div:first-child {
+          padding-left: var(--resume-padding-left) !important;
+        }
+
+        /* Last column (main content) - add right padding */
+        .resume-theme-wrapper > div.flex > div:last-child {
+          padding-right: var(--resume-padding-right) !important;
+        }
+
+        /* Fix for multi-page: Apply padding to all content sections */
+        .resume-theme-wrapper section,
+        .resume-theme-wrapper > div > div {
+          /* Prevent awkward breaks */
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+
+        /* Ensure flex containers maintain structure across pages */
+        .resume-theme-wrapper > div.flex {
+          /* For sidebar templates, ensure consistent width on all pages */
+          min-height: 100vh;
+        }
+
+        /* MULTI-PAGE FIX: Ensure consistent padding on page 2+ */
+        /* The issue: When content flows to page 2, flex layouts break */
+        /* Solution: Ensure content always has proper left/right spacing */
+
+        /* Global fix for all templates - ensure box-sizing is consistent */
+        .resume-theme-wrapper,
+        .resume-theme-wrapper *,
+        .resume-theme-wrapper *::before,
+        .resume-theme-wrapper *::after {
+          box-sizing: border-box !important;
+        }
+
+        /* Typography - Override Tailwind classes with CSS variables */
+        /* Target heading tags directly */
+        .resume-theme-wrapper h1 {
           font-size: var(--resume-heading-size) !important;
           line-height: var(--resume-line-height) !important;
         }
 
-        .resume-theme-wrapper h2,
-        .resume-theme-wrapper .text-2xl,
-        .resume-theme-wrapper .text-xl {
+        .resume-theme-wrapper h2 {
           font-size: var(--resume-subheading-size) !important;
           line-height: var(--resume-line-height) !important;
         }
 
         .resume-theme-wrapper h3,
-        .resume-theme-wrapper .text-lg {
+        .resume-theme-wrapper h4 {
           font-size: calc(var(--resume-body-size) * 1.1) !important;
           line-height: var(--resume-line-height) !important;
         }
 
-        .resume-theme-wrapper p,
-        .resume-theme-wrapper .text-base,
-        .resume-theme-wrapper div:not(.text-xs):not(.text-sm):not(.text-lg):not(.text-xl):not(.text-2xl):not(.text-3xl):not(.text-4xl):not(.text-5xl) {
+        .resume-theme-wrapper p {
           font-size: var(--resume-body-size) !important;
           line-height: var(--resume-line-height) !important;
         }
 
+        /* Override Tailwind text size classes */
+        .resume-theme-wrapper .text-5xl,
+        .resume-theme-wrapper .text-4xl {
+          font-size: var(--resume-heading-size) !important;
+        }
+
+        .resume-theme-wrapper .text-3xl,
+        .resume-theme-wrapper .text-2xl,
+        .resume-theme-wrapper .text-xl {
+          font-size: var(--resume-subheading-size) !important;
+        }
+
+        .resume-theme-wrapper .text-lg {
+          font-size: calc(var(--resume-body-size) * 1.1) !important;
+        }
+
+        .resume-theme-wrapper .text-base {
+          font-size: var(--resume-body-size) !important;
+        }
+
         .resume-theme-wrapper .text-sm {
-          font-size: calc(var(--resume-body-size) * 0.9) !important;
+          font-size: calc(var(--resume-body-size) * 0.875) !important;
         }
 
         .resume-theme-wrapper .text-xs {
@@ -105,26 +206,6 @@ export function ResumeThemeProvider({ children }: ResumeThemeProviderProps) {
         .resume-theme-wrapper .space-y-6 > * + *,
         .resume-theme-wrapper .space-y-4 > * + * {
           margin-top: var(--resume-item-spacing) !important;
-        }
-
-        .resume-theme-wrapper .p-16,
-        .resume-theme-wrapper .p-12,
-        .resume-theme-wrapper .p-8 {
-          padding: var(--resume-padding) !important;
-        }
-
-        .resume-theme-wrapper .px-16,
-        .resume-theme-wrapper .px-12,
-        .resume-theme-wrapper .px-8 {
-          padding-left: var(--resume-padding) !important;
-          padding-right: var(--resume-padding) !important;
-        }
-
-        .resume-theme-wrapper .py-16,
-        .resume-theme-wrapper .py-12,
-        .resume-theme-wrapper .py-8 {
-          padding-top: var(--resume-padding) !important;
-          padding-bottom: var(--resume-padding) !important;
         }
 
         /* PRIMARY COLOR - All primary brand colors (blue, indigo, purple, teal, green, etc.) */

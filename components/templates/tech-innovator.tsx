@@ -43,7 +43,35 @@ export function TechInnovator({ data }: TechInnovatorProps) {
                   <span>⌂</span> {formatLocation(basics.location)}
                 </span>
               )}
+              {basics.website && (
+                <span className="flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 backdrop-blur-sm">
+                  <span>🌐</span>
+                  <a
+                    href={basics.website}
+                    className="hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {basics.website.replace(/^https?:\/\//, '')}
+                  </a>
+                </span>
+              )}
             </div>
+            {basics.socials && basics.socials.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-3 text-sm text-white">
+                {basics.socials.map((social) => (
+                  <a
+                    key={social.id}
+                    href={social.url}
+                    className="rounded-full bg-white/20 px-3 py-1 backdrop-blur-sm hover:bg-white/30"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {social.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
           {photoUrl && (
             <div className="relative h-32 w-32">
@@ -92,15 +120,15 @@ export function TechInnovator({ data }: TechInnovatorProps) {
                   <div className="mb-4 flex items-center gap-2 text-blue-600">
                     <span className="text-lg">◆</span>
                     <h3 className="text-sm font-bold uppercase tracking-wider">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                   </div>
                   <div className="space-y-3">
                     {section.items.map((item) => (
                       <div key={item.id}>
-                        {item.category && (
+                        {item.heading && (
                           <div className="mb-2 text-xs font-bold uppercase text-cyan-600">
-                            {item.category}
+                            {item.heading}
                           </div>
                         )}
                         {item.tags && (
@@ -138,18 +166,18 @@ export function TechInnovator({ data }: TechInnovatorProps) {
                   <div className="mb-4 flex items-center gap-2 text-blue-600">
                     <span className="text-lg">◆</span>
                     <h3 className="text-sm font-bold uppercase tracking-wider">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                   </div>
                   <div className="space-y-2">
                     {section.items.map((item) => (
                       <div key={item.id} className="text-sm">
                         <div className="font-semibold text-gray-900">
-                          {item.title}
+                          {item.heading}
                         </div>
-                        {item.subtitle && (
+                        {item.subheading && (
                           <div className="text-xs text-gray-600">
-                            {item.subtitle}
+                            {item.subheading}
                           </div>
                         )}
                       </div>
@@ -169,7 +197,7 @@ export function TechInnovator({ data }: TechInnovatorProps) {
                   <div className="mb-4 flex items-center gap-2">
                     <span className="text-xl text-blue-600">▶</span>
                     <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                     <div className="h-px flex-1 bg-gradient-to-r from-blue-300 to-transparent"></div>
                   </div>
@@ -182,10 +210,10 @@ export function TechInnovator({ data }: TechInnovatorProps) {
                         <div className="mb-2 flex items-start justify-between">
                           <div>
                             <h4 className="font-bold text-gray-900">
-                              {item.title}
+                              {item.heading}
                             </h4>
                             <div className="text-sm font-semibold text-blue-600">
-                              {item.subtitle}
+                              {item.subheading}
                             </div>
                           </div>
                           <div className="rounded-lg bg-blue-50 px-3 py-1 text-xs text-blue-700">
@@ -203,6 +231,18 @@ export function TechInnovator({ data }: TechInnovatorProps) {
                               ))}
                             </ul>
                           )}
+                        {item.techStack && item.techStack.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {item.techStack.map((tech, idx) => (
+                              <span
+                                key={idx}
+                                className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs text-blue-700"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -217,7 +257,7 @@ export function TechInnovator({ data }: TechInnovatorProps) {
                   <div className="mb-4 flex items-center gap-2">
                     <span className="text-xl text-blue-600">▶</span>
                     <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                     <div className="h-px flex-1 bg-gradient-to-r from-blue-300 to-transparent"></div>
                   </div>
@@ -230,10 +270,10 @@ export function TechInnovator({ data }: TechInnovatorProps) {
                         <div className="flex items-start justify-between">
                           <div>
                             <h4 className="font-bold text-gray-900">
-                              {item.title}
+                              {item.heading}
                             </h4>
                             <div className="text-sm text-blue-600">
-                              {item.subtitle}
+                              {item.subheading}
                             </div>
                           </div>
                           <div className="text-xs text-gray-600">
@@ -254,7 +294,7 @@ export function TechInnovator({ data }: TechInnovatorProps) {
                   <div className="mb-4 flex items-center gap-2">
                     <span className="text-xl text-blue-600">▶</span>
                     <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                     <div className="h-px flex-1 bg-gradient-to-r from-blue-300 to-transparent"></div>
                   </div>
@@ -264,7 +304,7 @@ export function TechInnovator({ data }: TechInnovatorProps) {
                         key={item.id}
                         className="break-inside-avoid rounded-xl border-l-4 border-cyan-500 bg-white p-4 shadow-md"
                       >
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
                         {item.description && (
                           <p className="mt-1 text-sm text-gray-700">
                             {item.description}

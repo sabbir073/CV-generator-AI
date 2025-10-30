@@ -50,7 +50,36 @@ export function ModernProfessionalPlus({ data }: ModernProfessionalPlusProps) {
                   <span>⌂</span> {formatLocation(basics.location)}
                 </span>
               )}
+              {basics.website && (
+                <span className="flex items-center gap-1.5">
+                  <span>🌐</span>
+                  <a
+                    href={basics.website}
+                    className="hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {basics.website.replace(/^https?:\/\//, '')}
+                  </a>
+                </span>
+              )}
             </div>
+            {/* Social Links */}
+            {basics.socials && basics.socials.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-3 text-sm">
+                {basics.socials.map((social) => (
+                  <a
+                    key={social.id}
+                    href={social.url}
+                    className="hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {social.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -79,14 +108,14 @@ export function ModernProfessionalPlus({ data }: ModernProfessionalPlusProps) {
               .map((section) => (
                 <div key={section.id}>
                   <h3 className="mb-3 border-b-2 border-teal-500 pb-2 text-sm font-bold uppercase tracking-wider text-gray-900">
-                    {section.title}
+                    {section.titleOverride || section.title}
                   </h3>
                   <div className="space-y-3">
                     {section.items.map((item) => (
                       <div key={item.id}>
-                        {item.category && (
+                        {item.heading && (
                           <div className="mb-1 text-xs font-semibold text-teal-600">
-                            {item.category}
+                            {item.heading}
                           </div>
                         )}
                         {item.tags && (
@@ -119,17 +148,17 @@ export function ModernProfessionalPlus({ data }: ModernProfessionalPlusProps) {
               .map((section) => (
                 <div key={section.id}>
                   <h3 className="mb-3 border-b-2 border-teal-500 pb-2 text-sm font-bold uppercase tracking-wider text-gray-900">
-                    {section.title}
+                    {section.titleOverride || section.title}
                   </h3>
                   <div className="space-y-2">
                     {section.items.map((item) => (
                       <div key={item.id} className="text-sm">
                         <div className="font-semibold text-gray-900">
-                          {item.title}
+                          {item.heading}
                         </div>
-                        {item.subtitle && (
+                        {item.subheading && (
                           <div className="text-xs text-gray-600">
-                            {item.subtitle}
+                            {item.subheading}
                           </div>
                         )}
                       </div>
@@ -147,7 +176,7 @@ export function ModernProfessionalPlus({ data }: ModernProfessionalPlusProps) {
               .map((section) => (
                 <div key={section.id}>
                   <h3 className="mb-4 border-b-2 border-teal-500 pb-2 text-lg font-bold uppercase tracking-wider text-gray-900">
-                    {section.title}
+                    {section.titleOverride || section.title}
                   </h3>
                   <div className="space-y-4">
                     {section.items.map((item) => (
@@ -155,10 +184,10 @@ export function ModernProfessionalPlus({ data }: ModernProfessionalPlusProps) {
                         <div className="mb-2 flex items-start justify-between">
                           <div>
                             <h4 className="font-bold text-gray-900">
-                              {item.title}
+                              {item.heading}
                             </h4>
                             <div className="text-sm font-semibold text-teal-600">
-                              {item.subtitle}
+                              {item.subheading}
                             </div>
                           </div>
                           <div className="text-right text-xs text-gray-600">
@@ -179,6 +208,18 @@ export function ModernProfessionalPlus({ data }: ModernProfessionalPlusProps) {
                               ))}
                             </ul>
                           )}
+                        {item.techStack && item.techStack.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {item.techStack.map((tech, idx) => (
+                              <span
+                                key={idx}
+                                className="rounded bg-teal-100 px-2 py-0.5 text-xs text-teal-700"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -191,7 +232,7 @@ export function ModernProfessionalPlus({ data }: ModernProfessionalPlusProps) {
               .map((section) => (
                 <div key={section.id}>
                   <h3 className="mb-4 border-b-2 border-teal-500 pb-2 text-lg font-bold uppercase tracking-wider text-gray-900">
-                    {section.title}
+                    {section.titleOverride || section.title}
                   </h3>
                   <div className="space-y-3">
                     {section.items.map((item) => (
@@ -199,10 +240,10 @@ export function ModernProfessionalPlus({ data }: ModernProfessionalPlusProps) {
                         <div className="flex items-start justify-between">
                           <div>
                             <h4 className="font-bold text-gray-900">
-                              {item.title}
+                              {item.heading}
                             </h4>
                             <div className="text-sm text-teal-600">
-                              {item.subtitle}
+                              {item.subheading}
                             </div>
                           </div>
                           <div className="text-xs text-gray-600">
@@ -221,16 +262,28 @@ export function ModernProfessionalPlus({ data }: ModernProfessionalPlusProps) {
               .map((section) => (
                 <div key={section.id}>
                   <h3 className="mb-4 border-b-2 border-teal-500 pb-2 text-lg font-bold uppercase tracking-wider text-gray-900">
-                    {section.title}
+                    {section.titleOverride || section.title}
                   </h3>
                   <div className="space-y-3">
                     {section.items.map((item) => (
                       <div key={item.id} className="break-inside-avoid">
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
                         {item.description && (
                           <p className="mt-1 text-sm text-gray-700">
                             {item.description}
                           </p>
+                        )}
+                        {item.techStack && item.techStack.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {item.techStack.map((tech, idx) => (
+                              <span
+                                key={idx}
+                                className="rounded bg-teal-100 px-2 py-0.5 text-xs text-teal-700"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
                         )}
                       </div>
                     ))}

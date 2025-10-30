@@ -27,7 +27,32 @@ export function MinimalistGrid({ data }: MinimalistGridProps) {
           {basics.email && <span>{basics.email}</span>}
           {basics.phone && <span>{basics.phone}</span>}
           {basics.location && <span>{formatLocation(basics.location)}</span>}
+          {basics.website && (
+            <a
+              href={basics.website}
+              className="hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {basics.website.replace(/^https?:\/\//, '')}
+            </a>
+          )}
         </div>
+        {basics.socials && basics.socials.length > 0 && (
+          <div className="mt-3 flex flex-wrap justify-center gap-3 text-sm">
+            {basics.socials.map((social) => (
+              <a
+                key={social.id}
+                href={social.url}
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Summary */}
@@ -49,7 +74,7 @@ export function MinimalistGrid({ data }: MinimalistGridProps) {
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
                 <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
               </div>
               <div className="space-y-4">
@@ -57,9 +82,9 @@ export function MinimalistGrid({ data }: MinimalistGridProps) {
                   <div key={item.id} className="break-inside-avoid rounded-lg bg-gray-50 p-4">
                     <div className="mb-2 flex items-start justify-between">
                       <div>
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
                         <div className="text-sm font-semibold text-yellow-600">
-                          {item.subtitle}
+                          {item.subheading}
                         </div>
                       </div>
                       <div className="text-xs text-gray-600">
@@ -77,6 +102,18 @@ export function MinimalistGrid({ data }: MinimalistGridProps) {
                           ))}
                         </ul>
                       )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-yellow-100 px-2 py-0.5 text-xs text-yellow-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -91,15 +128,15 @@ export function MinimalistGrid({ data }: MinimalistGridProps) {
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
                 <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900">
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
               </div>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id}>
-                    {item.category && (
+                    {item.heading && (
                       <div className="mb-2 text-xs font-bold text-yellow-600">
-                        {item.category}
+                        {item.heading}
                       </div>
                     )}
                     {item.tags && (
@@ -128,15 +165,15 @@ export function MinimalistGrid({ data }: MinimalistGridProps) {
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
                 <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
               </div>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid rounded-lg bg-gray-50 p-3">
-                    <h4 className="font-bold text-gray-900">{item.title}</h4>
+                    <h4 className="font-bold text-gray-900">{item.heading}</h4>
                     <div className="text-sm text-yellow-600">
-                      {item.subtitle}
+                      {item.subheading}
                     </div>
                     <div className="text-xs text-gray-600">
                       {item.startDate} - {item.endDate || 'Present'}
@@ -155,15 +192,27 @@ export function MinimalistGrid({ data }: MinimalistGridProps) {
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
                 <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid rounded-lg bg-gray-50 p-3">
-                    <h4 className="mb-1 font-bold text-gray-900">{item.title}</h4>
+                    <h4 className="mb-1 font-bold text-gray-900">{item.heading}</h4>
                     {item.description && (
                       <p className="text-xs text-gray-700">{item.description}</p>
+                    )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-yellow-100 px-2 py-0.5 text-xs text-yellow-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -185,17 +234,17 @@ export function MinimalistGrid({ data }: MinimalistGridProps) {
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
                 <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid rounded-lg bg-gray-50 p-3 text-sm">
                     <span className="font-semibold text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </span>
-                    {item.subtitle && (
-                      <span className="text-gray-700"> - {item.subtitle}</span>
+                    {item.subheading && (
+                      <span className="text-gray-700"> - {item.subheading}</span>
                     )}
                   </div>
                 ))}

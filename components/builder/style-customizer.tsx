@@ -38,18 +38,21 @@ export function StyleCustomizer() {
   const [typography, setTypography] = useState({
     fontFamily: metadata?.fontFamily || 'Inter, sans-serif',
     fontSize: metadata?.fontSize || 'medium',
-    headingFontSize: 24,
-    subheadingFontSize: 18,
-    bodyFontSize: 14,
-    smallFontSize: 12,
-    lineHeight: 1.5,
-    letterSpacing: 0,
+    headingFontSize: metadata?.typography?.headingFontSize || 24,
+    subheadingFontSize: metadata?.typography?.subheadingFontSize || 18,
+    bodyFontSize: metadata?.typography?.bodyFontSize || 14,
+    smallFontSize: metadata?.typography?.smallFontSize || 12,
+    lineHeight: metadata?.typography?.lineHeight || 1.5,
+    letterSpacing: metadata?.typography?.letterSpacing || 0,
   })
 
   const [spacing, setSpacing] = useState({
-    sectionSpacing: metadata?.spacing === 'compact' ? 16 : metadata?.spacing === 'relaxed' ? 32 : 24,
-    itemSpacing: 12,
-    padding: 16,
+    sectionSpacing: metadata?.spacingSettings?.sectionSpacing || (metadata?.spacing === 'compact' ? 16 : metadata?.spacing === 'relaxed' ? 32 : 24),
+    itemSpacing: metadata?.spacingSettings?.itemSpacing || 12,
+    paddingTop: metadata?.spacingSettings?.paddingTop || 50,
+    paddingBottom: metadata?.spacingSettings?.paddingBottom || 50,
+    paddingLeft: metadata?.spacingSettings?.paddingLeft || 50,
+    paddingRight: metadata?.spacingSettings?.paddingRight || 50,
   })
 
   // Sync with metadata changes from Settings dialog or other sources
@@ -76,19 +79,41 @@ export function StyleCustomizer() {
 
   useEffect(() => {
     if (metadata?.fontFamily) {
-      setTypography(prev => ({ ...prev, fontFamily: metadata.fontFamily }))
+      setTypography(prev => ({ ...prev, fontFamily: metadata.fontFamily || prev.fontFamily }))
     }
     if (metadata?.fontSize) {
-      setTypography(prev => ({ ...prev, fontSize: metadata.fontSize }))
+      setTypography(prev => ({ ...prev, fontSize: metadata.fontSize || prev.fontSize }))
     }
-  }, [metadata?.fontFamily, metadata?.fontSize])
+    if (metadata?.typography) {
+      setTypography(prev => ({
+        ...prev,
+        headingFontSize: metadata.typography?.headingFontSize || prev.headingFontSize,
+        subheadingFontSize: metadata.typography?.subheadingFontSize || prev.subheadingFontSize,
+        bodyFontSize: metadata.typography?.bodyFontSize || prev.bodyFontSize,
+        smallFontSize: metadata.typography?.smallFontSize || prev.smallFontSize,
+        lineHeight: metadata.typography?.lineHeight || prev.lineHeight,
+        letterSpacing: metadata.typography?.letterSpacing || prev.letterSpacing,
+      }))
+    }
+  }, [metadata?.fontFamily, metadata?.fontSize, metadata?.typography])
 
   useEffect(() => {
-    if (metadata?.spacing) {
+    if (metadata?.spacingSettings) {
+      setSpacing(prev => ({
+        ...prev,
+        sectionSpacing: metadata.spacingSettings?.sectionSpacing || prev.sectionSpacing,
+        itemSpacing: metadata.spacingSettings?.itemSpacing || prev.itemSpacing,
+        paddingTop: metadata.spacingSettings?.paddingTop || 50,
+        paddingBottom: metadata.spacingSettings?.paddingBottom || 50,
+        paddingLeft: metadata.spacingSettings?.paddingLeft || 50,
+        paddingRight: metadata.spacingSettings?.paddingRight || 50,
+      }))
+    } else if (metadata?.spacing) {
+      // Legacy support for old spacing field
       const sectionSpacing = metadata.spacing === 'compact' ? 16 : metadata.spacing === 'relaxed' ? 32 : 24
       setSpacing(prev => ({ ...prev, sectionSpacing }))
     }
-  }, [metadata?.spacing])
+  }, [metadata?.spacing, metadata?.spacingSettings])
 
   const handleColorChange = (field: string, value: string) => {
     const newColors = { ...colors, [field]: value }
@@ -122,18 +147,28 @@ export function StyleCustomizer() {
     const newSpacing = { ...spacing, [field]: value }
     setSpacing(newSpacing)
 
-    if (field === 'sectionSpacing') {
-      const spacingMode = value <= 16 ? 'compact' : value >= 32 ? 'relaxed' : 'normal'
-      updateMetadata({ spacing: spacingMode })
-    }
-
     // Save all spacing settings to metadata
     const spacingSettings = {
       sectionSpacing: newSpacing.sectionSpacing,
       itemSpacing: newSpacing.itemSpacing,
-      padding: newSpacing.padding,
+      paddingTop: newSpacing.paddingTop,
+      paddingBottom: newSpacing.paddingBottom,
+      paddingLeft: newSpacing.paddingLeft,
+      paddingRight: newSpacing.paddingRight,
     }
     updateMetadata({ spacingSettings })
+  }
+
+  const applySpacingPreset = (preset: {
+    sectionSpacing: number
+    itemSpacing: number
+    paddingTop: number
+    paddingBottom: number
+    paddingLeft: number
+    paddingRight: number
+  }) => {
+    setSpacing(preset)
+    updateMetadata({ spacingSettings: preset })
   }
 
   const resetStyles = () => {
@@ -153,12 +188,25 @@ export function StyleCustomizer() {
       linkColor: '#2563eb',
       iconColor: '#3b82f6',
     }
+
+    const defaultSpacing = {
+      sectionSpacing: 24,
+      itemSpacing: 12,
+      paddingTop: 50,
+      paddingBottom: 50,
+      paddingLeft: 50,
+      paddingRight: 50,
+    }
+
     setColors(defaultColors)
+    setSpacing(defaultSpacing)
+
     updateMetadata({
       colorScheme: defaultColors,
       fontFamily: 'Inter, sans-serif',
       fontSize: 'medium',
-      spacing: 'normal'
+      spacing: 'normal',
+      spacingSettings: defaultSpacing,
     })
     toast.success('Reset to default styles')
   }
@@ -429,9 +477,9 @@ export function StyleCustomizer() {
                 <Slider
                   value={[spacing.sectionSpacing]}
                   onValueChange={(val) => handleSpacingChange('sectionSpacing', val[0])}
-                  min={8}
-                  max={48}
-                  step={4}
+                  min={0}
+                  max={200}
+                  step={5}
                 />
               </div>
 
@@ -446,26 +494,77 @@ export function StyleCustomizer() {
                 <Slider
                   value={[spacing.itemSpacing]}
                   onValueChange={(val) => handleSpacingChange('itemSpacing', val[0])}
-                  min={4}
-                  max={32}
-                  step={2}
+                  min={0}
+                  max={200}
+                  step={5}
                 />
               </div>
 
               <div>
                 <div className="mb-2 flex items-center justify-between">
                   <div>
-                    <Label className="text-sm">Content Padding</Label>
-                    <p className="text-xs text-muted-foreground">Inner padding</p>
+                    <Label className="text-sm">Top Padding</Label>
+                    <p className="text-xs text-muted-foreground">Padding from top</p>
                   </div>
-                  <span className="text-xs text-muted-foreground">{spacing.padding}px</span>
+                  <span className="text-xs text-muted-foreground">{spacing.paddingTop}px</span>
                 </div>
                 <Slider
-                  value={[spacing.padding]}
-                  onValueChange={(val) => handleSpacingChange('padding', val[0])}
-                  min={8}
-                  max={40}
-                  step={4}
+                  value={[spacing.paddingTop]}
+                  onValueChange={(val) => handleSpacingChange('paddingTop', val[0])}
+                  min={0}
+                  max={200}
+                  step={5}
+                />
+              </div>
+
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <div>
+                    <Label className="text-sm">Bottom Padding</Label>
+                    <p className="text-xs text-muted-foreground">Padding from bottom</p>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{spacing.paddingBottom}px</span>
+                </div>
+                <Slider
+                  value={[spacing.paddingBottom]}
+                  onValueChange={(val) => handleSpacingChange('paddingBottom', val[0])}
+                  min={0}
+                  max={200}
+                  step={5}
+                />
+              </div>
+
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <div>
+                    <Label className="text-sm">Left Padding</Label>
+                    <p className="text-xs text-muted-foreground">Padding from left</p>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{spacing.paddingLeft}px</span>
+                </div>
+                <Slider
+                  value={[spacing.paddingLeft]}
+                  onValueChange={(val) => handleSpacingChange('paddingLeft', val[0])}
+                  min={0}
+                  max={200}
+                  step={5}
+                />
+              </div>
+
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <div>
+                    <Label className="text-sm">Right Padding</Label>
+                    <p className="text-xs text-muted-foreground">Padding from right</p>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{spacing.paddingRight}px</span>
+                </div>
+                <Slider
+                  value={[spacing.paddingRight]}
+                  onValueChange={(val) => handleSpacingChange('paddingRight', val[0])}
+                  min={0}
+                  max={200}
+                  step={5}
                 />
               </div>
             </div>
@@ -478,9 +577,14 @@ export function StyleCustomizer() {
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  handleSpacingChange('sectionSpacing', 16)
-                  handleSpacingChange('itemSpacing', 8)
-                  handleSpacingChange('padding', 12)
+                  applySpacingPreset({
+                    sectionSpacing: 16,
+                    itemSpacing: 8,
+                    paddingTop: 30,
+                    paddingBottom: 30,
+                    paddingLeft: 30,
+                    paddingRight: 30,
+                  })
                   toast.success('Applied Compact spacing')
                 }}
               >
@@ -490,9 +594,14 @@ export function StyleCustomizer() {
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  handleSpacingChange('sectionSpacing', 24)
-                  handleSpacingChange('itemSpacing', 12)
-                  handleSpacingChange('padding', 16)
+                  applySpacingPreset({
+                    sectionSpacing: 24,
+                    itemSpacing: 12,
+                    paddingTop: 50,
+                    paddingBottom: 50,
+                    paddingLeft: 50,
+                    paddingRight: 50,
+                  })
                   toast.success('Applied Normal spacing')
                 }}
               >
@@ -502,9 +611,14 @@ export function StyleCustomizer() {
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  handleSpacingChange('sectionSpacing', 32)
-                  handleSpacingChange('itemSpacing', 16)
-                  handleSpacingChange('padding', 24)
+                  applySpacingPreset({
+                    sectionSpacing: 32,
+                    itemSpacing: 16,
+                    paddingTop: 70,
+                    paddingBottom: 70,
+                    paddingLeft: 70,
+                    paddingRight: 70,
+                  })
                   toast.success('Applied Relaxed spacing')
                 }}
               >

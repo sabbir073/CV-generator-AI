@@ -48,7 +48,35 @@ export function CorporateExcellence({ data }: CorporateExcellenceProps) {
                   {basics.linkedin}
                 </div>
               )}
+              {basics.website && (
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">Website:</span>{' '}
+                  <a
+                    href={basics.website}
+                    className="hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {basics.website.replace(/^https?:\/\//, '')}
+                  </a>
+                </div>
+              )}
             </div>
+            {basics.socials && basics.socials.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-3 text-sm">
+                {basics.socials.map((social) => (
+                  <a
+                    key={social.id}
+                    href={social.url}
+                    className="hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {social.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
           {photoUrl && (
             <div className="ml-6 h-32 w-32 overflow-hidden rounded-sm border-4 border-gray-300 shadow-lg">
@@ -82,16 +110,16 @@ export function CorporateExcellence({ data }: CorporateExcellenceProps) {
           .map((section) => (
             <div key={section.id} className="mb-6">
               <h3 className="mb-4 border-b-2 border-gray-900 pb-2 text-sm font-bold uppercase tracking-wider text-gray-900">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-4">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
                     <div className="mb-2 flex items-start justify-between">
                       <div>
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
                         <div className="text-sm font-semibold text-gray-700">
-                          {item.subtitle}
+                          {item.subheading}
                         </div>
                         {item.location && (
                           <div className="text-xs text-gray-600">
@@ -111,6 +139,18 @@ export function CorporateExcellence({ data }: CorporateExcellenceProps) {
                           ))}
                         </ul>
                       )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -125,14 +165,14 @@ export function CorporateExcellence({ data }: CorporateExcellenceProps) {
             .map((section) => (
               <div key={section.id}>
                 <h3 className="mb-3 border-b-2 border-gray-900 pb-2 text-sm font-bold uppercase tracking-wider text-gray-900">
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
                 <div className="space-y-3">
                   {section.items.map((item) => (
                     <div key={item.id}>
-                      {item.category && (
+                      {item.heading && (
                         <div className="mb-1 text-xs font-bold uppercase text-gray-700">
-                          {item.category}
+                          {item.heading}
                         </div>
                       )}
                       {item.tags && (
@@ -160,14 +200,14 @@ export function CorporateExcellence({ data }: CorporateExcellenceProps) {
             .map((section) => (
               <div key={section.id}>
                 <h3 className="mb-3 border-b-2 border-gray-900 pb-2 text-sm font-bold uppercase tracking-wider text-gray-900">
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
                 <div className="space-y-3">
                   {section.items.map((item) => (
                     <div key={item.id} className="break-inside-avoid">
-                      <h4 className="font-bold text-gray-900">{item.title}</h4>
+                      <h4 className="font-bold text-gray-900">{item.heading}</h4>
                       <div className="text-sm text-gray-700">
-                        {item.subtitle}
+                        {item.subheading}
                       </div>
                       <div className="text-xs text-gray-600">
                         {item.startDate} - {item.endDate || 'Present'}
@@ -185,14 +225,26 @@ export function CorporateExcellence({ data }: CorporateExcellenceProps) {
           .map((section) => (
             <div key={section.id} className="mt-6">
               <h3 className="mb-3 border-b-2 border-gray-900 pb-2 text-sm font-bold uppercase tracking-wider text-gray-900">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-2">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
-                    <h4 className="font-bold text-gray-900">{item.title}</h4>
+                    <h4 className="font-bold text-gray-900">{item.heading}</h4>
                     {item.description && (
                       <p className="text-sm text-gray-700">{item.description}</p>
+                    )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -212,16 +264,16 @@ export function CorporateExcellence({ data }: CorporateExcellenceProps) {
           .map((section) => (
             <div key={section.id} className="mt-6">
               <h3 className="mb-3 border-b-2 border-gray-900 pb-2 text-sm font-bold uppercase tracking-wider text-gray-900">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-2">
                 {section.items.map((item) => (
                   <div key={item.id} className="text-sm">
                     <span className="font-semibold text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </span>
-                    {item.subtitle && (
-                      <span className="text-gray-700"> - {item.subtitle}</span>
+                    {item.subheading && (
+                      <span className="text-gray-700"> - {item.subheading}</span>
                     )}
                   </div>
                 ))}

@@ -18,7 +18,7 @@ export function useAutoSave(options: UseAutoSaveOptions = {}) {
   const { enabled = true, debounceMs = 1000, onSave } = options
   const isDirty = useResumeStore((state) => state.isDirty)
   const markClean = useResumeStore((state) => state.markClean)
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
     if (!enabled || !isDirty) return

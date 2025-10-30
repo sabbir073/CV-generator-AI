@@ -26,7 +26,32 @@ export function ModernLines({ data }: ModernLinesProps) {
           {basics.email && <span>{basics.email}</span>}
           {basics.phone && <span>{basics.phone}</span>}
           {basics.location && <span>{formatLocation(basics.location)}</span>}
+          {basics.website && (
+            <a
+              href={basics.website}
+              className="hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {basics.website.replace(/^https?:\/\//, '')}
+            </a>
+          )}
         </div>
+        {basics.socials && basics.socials.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-3 text-sm">
+            {basics.socials.map((social) => (
+              <a
+                key={social.id}
+                href={social.url}
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Summary */}
@@ -47,16 +72,16 @@ export function ModernLines({ data }: ModernLinesProps) {
         .map((section) => (
           <div key={section.id} className="mb-6 border-b border-gray-300 pb-6">
             <h3 className="mb-4 text-lg font-bold uppercase tracking-wider text-navy-800">
-              {section.title}
+              {section.titleOverride || section.title}
             </h3>
             <div className="space-y-4">
               {section.items.map((item) => (
                 <div key={item.id} className="break-inside-avoid">
                   <div className="mb-2 flex items-start justify-between border-b border-gray-200 pb-2">
                     <div>
-                      <h4 className="font-bold text-gray-900">{item.title}</h4>
+                      <h4 className="font-bold text-gray-900">{item.heading}</h4>
                       <div className="text-sm font-semibold text-navy-700">
-                        {item.subtitle}
+                        {item.subheading}
                       </div>
                     </div>
                     <div className="text-right text-xs text-gray-600">
@@ -77,6 +102,18 @@ export function ModernLines({ data }: ModernLinesProps) {
                         ))}
                       </ul>
                     )}
+                  {item.techStack && item.techStack.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {item.techStack.map((tech, idx) => (
+                        <span
+                          key={idx}
+                          className="rounded bg-navy-100 px-2 py-0.5 text-xs text-navy-700"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -91,13 +128,13 @@ export function ModernLines({ data }: ModernLinesProps) {
           .map((section) => (
             <div key={section.id} className="border-b border-gray-300 pb-6">
               <h3 className="mb-4 text-lg font-bold uppercase tracking-wider text-navy-800">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid border-b border-gray-200 pb-2">
-                    <h4 className="font-bold text-gray-900">{item.title}</h4>
-                    <div className="text-sm text-navy-700">{item.subtitle}</div>
+                    <h4 className="font-bold text-gray-900">{item.heading}</h4>
+                    <div className="text-sm text-navy-700">{item.subheading}</div>
                     <div className="text-xs text-gray-600">
                       {item.startDate} - {item.endDate || 'Present'}
                     </div>
@@ -113,14 +150,14 @@ export function ModernLines({ data }: ModernLinesProps) {
           .map((section) => (
             <div key={section.id} className="border-b border-gray-300 pb-6">
               <h3 className="mb-4 text-lg font-bold uppercase tracking-wider text-navy-800">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid border-b border-gray-200 pb-2">
-                    {item.category && (
+                    {item.heading && (
                       <div className="mb-1 text-xs font-bold uppercase text-navy-700">
-                        {item.category}
+                        {item.heading}
                       </div>
                     )}
                     {item.tags && (
@@ -145,14 +182,26 @@ export function ModernLines({ data }: ModernLinesProps) {
         .map((section) => (
           <div key={section.id} className="mt-6 border-b border-gray-300 pb-6">
             <h3 className="mb-4 text-lg font-bold uppercase tracking-wider text-navy-800">
-              {section.title}
+              {section.titleOverride || section.title}
             </h3>
             <div className="grid grid-cols-2 gap-4">
               {section.items.map((item) => (
                 <div key={item.id} className="break-inside-avoid border-b border-gray-200 pb-2">
-                  <h4 className="font-bold text-gray-900">{item.title}</h4>
+                  <h4 className="font-bold text-gray-900">{item.heading}</h4>
                   {item.description && (
                     <p className="text-sm text-gray-700">{item.description}</p>
+                  )}
+                  {item.techStack && item.techStack.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {item.techStack.map((tech, idx) => (
+                        <span
+                          key={idx}
+                          className="rounded bg-navy-100 px-2 py-0.5 text-xs text-navy-700"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
               ))}
@@ -170,16 +219,16 @@ export function ModernLines({ data }: ModernLinesProps) {
         .map((section) => (
           <div key={section.id} className="mt-6 border-b border-gray-300 pb-6">
             <h3 className="mb-4 text-lg font-bold uppercase tracking-wider text-navy-800">
-              {section.title}
+              {section.titleOverride || section.title}
             </h3>
             <div className="space-y-2">
               {section.items.map((item) => (
                 <div key={item.id} className="break-inside-avoid text-sm">
                   <span className="font-semibold text-gray-900">
-                    {item.title}
+                    {item.heading}
                   </span>
-                  {item.subtitle && (
-                    <span className="text-gray-700"> - {item.subtitle}</span>
+                  {item.subheading && (
+                    <span className="text-gray-700"> - {item.subheading}</span>
                   )}
                 </div>
               ))}

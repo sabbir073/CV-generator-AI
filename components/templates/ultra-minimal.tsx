@@ -29,7 +29,32 @@ export function UltraMinimal({ data }: UltraMinimalProps) {
           {basics.email && <span>{basics.email}</span>}
           {basics.phone && <span>{basics.phone}</span>}
           {basics.location && <span>{formatLocation(basics.location)}</span>}
+          {basics.website && (
+            <a
+              href={basics.website}
+              className="hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {basics.website.replace(/^https?:\/\//, '')}
+            </a>
+          )}
         </div>
+        {basics.socials && basics.socials.length > 0 && (
+          <div className="mt-3 flex justify-center gap-8 text-xs text-gray-500">
+            {basics.socials.map((social) => (
+              <a
+                key={social.id}
+                href={social.url}
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Summary */}
@@ -49,17 +74,17 @@ export function UltraMinimal({ data }: UltraMinimalProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-8 text-center text-xs font-light uppercase tracking-[0.3em] text-gray-400">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-10">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
                     <div className="mb-4 text-center">
                       <h4 className="mb-1 text-sm font-normal text-gray-900">
-                        {item.title}
+                        {item.heading}
                       </h4>
                       <div className="mb-1 text-xs text-gray-500">
-                        {item.subtitle}
+                        {item.subheading}
                       </div>
                       <div className="text-xs text-gray-400">
                         {item.startDate} - {item.endDate || 'Present'}
@@ -73,6 +98,15 @@ export function UltraMinimal({ data }: UltraMinimalProps) {
                           ))}
                         </div>
                       )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-3 flex flex-wrap justify-center gap-4">
+                        {item.techStack.map((tech, idx) => (
+                          <span key={idx} className="text-xs text-gray-500">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -85,16 +119,16 @@ export function UltraMinimal({ data }: UltraMinimalProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-8 text-center text-xs font-light uppercase tracking-[0.3em] text-gray-400">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-6">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center">
                     <h4 className="mb-1 text-sm font-normal text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </h4>
                     <div className="mb-1 text-xs text-gray-500">
-                      {item.subtitle}
+                      {item.subheading}
                     </div>
                     <div className="text-xs text-gray-400">
                       {item.startDate} - {item.endDate || 'Present'}
@@ -111,14 +145,14 @@ export function UltraMinimal({ data }: UltraMinimalProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-8 text-center text-xs font-light uppercase tracking-[0.3em] text-gray-400">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-6">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center">
-                    {item.category && (
+                    {item.heading && (
                       <div className="mb-2 text-xs font-normal text-gray-900">
-                        {item.category}
+                        {item.heading}
                       </div>
                     )}
                     {item.tags && (
@@ -142,16 +176,25 @@ export function UltraMinimal({ data }: UltraMinimalProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-8 text-center text-xs font-light uppercase tracking-[0.3em] text-gray-400">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-6">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center">
                     <h4 className="mb-2 text-sm font-normal text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </h4>
                     {item.description && (
                       <p className="text-xs text-gray-600">{item.description}</p>
+                    )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap justify-center gap-4">
+                        {item.techStack.map((tech, idx) => (
+                          <span key={idx} className="text-xs text-gray-500">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -171,16 +214,16 @@ export function UltraMinimal({ data }: UltraMinimalProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-8 text-center text-xs font-light uppercase tracking-[0.3em] text-gray-400">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-4">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center text-xs">
                     <span className="font-normal text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </span>
-                    {item.subtitle && (
-                      <span className="text-gray-500"> - {item.subtitle}</span>
+                    {item.subheading && (
+                      <span className="text-gray-500"> - {item.subheading}</span>
                     )}
                   </div>
                 ))}

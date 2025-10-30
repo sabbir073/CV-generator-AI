@@ -38,7 +38,33 @@ export function ElegantClassic({ data }: ElegantClassicProps) {
           {basics.phone && <span>{basics.phone}</span>}
           {basics.location && <span>•</span>}
           {basics.location && <span>{formatLocation(basics.location)}</span>}
+          {basics.website && <span>•</span>}
+          {basics.website && (
+            <a
+              href={basics.website}
+              className="hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {basics.website.replace(/^https?:\/\//, '')}
+            </a>
+          )}
         </div>
+        {basics.socials && basics.socials.length > 0 && (
+          <div className="mt-3 flex flex-wrap justify-center gap-3 text-sm">
+            {basics.socials.map((social) => (
+              <a
+                key={social.id}
+                href={social.url}
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Summary */}
@@ -58,17 +84,17 @@ export function ElegantClassic({ data }: ElegantClassicProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-4 border-b border-amber-800 pb-2 text-center text-sm font-semibold uppercase tracking-widest text-gray-800">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-4">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
                     <div className="mb-2 text-center">
                       <h4 className="font-semibold text-gray-900">
-                        {item.title}
+                        {item.heading}
                       </h4>
                       <div className="text-sm italic text-amber-800">
-                        {item.subtitle}
+                        {item.subheading}
                       </div>
                       <div className="text-xs text-gray-600">
                         {item.startDate} - {item.endDate || 'Present'}
@@ -86,6 +112,18 @@ export function ElegantClassic({ data }: ElegantClassicProps) {
                           ))}
                         </ul>
                       )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mx-auto mt-2 flex max-w-3xl flex-wrap justify-center gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-800"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -98,14 +136,14 @@ export function ElegantClassic({ data }: ElegantClassicProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-4 border-b border-amber-800 pb-2 text-center text-sm font-semibold uppercase tracking-widest text-gray-800">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center">
-                    <h4 className="font-semibold text-gray-900">{item.title}</h4>
+                    <h4 className="font-semibold text-gray-900">{item.heading}</h4>
                     <div className="text-sm italic text-amber-800">
-                      {item.subtitle}
+                      {item.subheading}
                     </div>
                     <div className="text-xs text-gray-600">
                       {item.startDate} - {item.endDate || 'Present'}
@@ -122,14 +160,14 @@ export function ElegantClassic({ data }: ElegantClassicProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-4 border-b border-amber-800 pb-2 text-center text-sm font-semibold uppercase tracking-widest text-gray-800">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center">
-                    {item.category && (
+                    {item.heading && (
                       <div className="mb-1 text-xs font-semibold text-gray-800">
-                        {item.category}
+                        {item.heading}
                       </div>
                     )}
                     {item.tags && (
@@ -153,14 +191,26 @@ export function ElegantClassic({ data }: ElegantClassicProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-4 border-b border-amber-800 pb-2 text-center text-sm font-semibold uppercase tracking-widest text-gray-800">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center">
-                    <h4 className="font-semibold text-gray-900">{item.title}</h4>
+                    <h4 className="font-semibold text-gray-900">{item.heading}</h4>
                     {item.description && (
                       <p className="text-sm text-gray-700">{item.description}</p>
+                    )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap justify-center gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-800"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -180,16 +230,16 @@ export function ElegantClassic({ data }: ElegantClassicProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-4 border-b border-amber-800 pb-2 text-center text-sm font-semibold uppercase tracking-widest text-gray-800">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-2">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center text-sm">
                     <span className="font-semibold text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </span>
-                    {item.subtitle && (
-                      <span className="text-gray-700"> - {item.subtitle}</span>
+                    {item.subheading && (
+                      <span className="text-gray-700"> - {item.subheading}</span>
                     )}
                   </div>
                 ))}

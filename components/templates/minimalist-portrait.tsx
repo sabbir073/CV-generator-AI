@@ -36,7 +36,32 @@ export function MinimalistPortrait({ data }: MinimalistPortraitProps) {
           {basics.email && <span>{basics.email}</span>}
           {basics.phone && <span>{basics.phone}</span>}
           {basics.location && <span>{formatLocation(basics.location)}</span>}
+          {basics.website && (
+            <a
+              href={basics.website}
+              className="hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {basics.website.replace(/^https?:\/\//, '')}
+            </a>
+          )}
         </div>
+        {basics.socials && basics.socials.length > 0 && (
+          <div className="mx-auto mt-3 flex max-w-xl flex-wrap justify-center gap-3 text-xs">
+            {basics.socials.map((social) => (
+              <a
+                key={social.id}
+                href={social.url}
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Summary */}
@@ -56,16 +81,16 @@ export function MinimalistPortrait({ data }: MinimalistPortraitProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-6 text-center text-xs font-light uppercase tracking-widest text-gray-400">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-8">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center">
                     <h4 className="mb-1 text-sm font-medium text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </h4>
                     <div className="mb-1 text-xs text-gray-600">
-                      {item.subtitle}
+                      {item.subheading}
                     </div>
                     <div className="mb-3 text-xs text-gray-400">
                       {item.startDate} - {item.endDate || 'Present'}
@@ -78,6 +103,18 @@ export function MinimalistPortrait({ data }: MinimalistPortraitProps) {
                           ))}
                         </div>
                       )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mx-auto mt-2 flex max-w-2xl flex-wrap justify-center gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -90,16 +127,16 @@ export function MinimalistPortrait({ data }: MinimalistPortraitProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-6 text-center text-xs font-light uppercase tracking-widest text-gray-400">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-6">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center">
                     <h4 className="mb-1 text-sm font-medium text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </h4>
                     <div className="mb-1 text-xs text-gray-600">
-                      {item.subtitle}
+                      {item.subheading}
                     </div>
                     <div className="text-xs text-gray-400">
                       {item.startDate} - {item.endDate || 'Present'}
@@ -116,14 +153,14 @@ export function MinimalistPortrait({ data }: MinimalistPortraitProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-6 text-center text-xs font-light uppercase tracking-widest text-gray-400">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-4">
                 {section.items.map((item) => (
                   <div key={item.id} className="text-center">
-                    {item.category && (
+                    {item.heading && (
                       <div className="mb-2 text-xs font-medium text-gray-900">
-                        {item.category}
+                        {item.heading}
                       </div>
                     )}
                     {item.tags && (
@@ -147,16 +184,28 @@ export function MinimalistPortrait({ data }: MinimalistPortraitProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-6 text-center text-xs font-light uppercase tracking-widest text-gray-400">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-4">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center">
                     <h4 className="mb-1 text-sm font-medium text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </h4>
                     {item.description && (
                       <p className="text-xs text-gray-600">{item.description}</p>
+                    )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap justify-center gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -176,16 +225,16 @@ export function MinimalistPortrait({ data }: MinimalistPortraitProps) {
           .map((section) => (
             <div key={section.id}>
               <h3 className="mb-6 text-center text-xs font-light uppercase tracking-widest text-gray-400">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-center text-xs">
                     <span className="font-medium text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </span>
-                    {item.subtitle && (
-                      <span className="text-gray-600"> - {item.subtitle}</span>
+                    {item.subheading && (
+                      <span className="text-gray-600"> - {item.subheading}</span>
                     )}
                   </div>
                 ))}

@@ -105,7 +105,10 @@ export function BuilderHeader({ isDirty }: BuilderHeaderProps) {
         // Spacing
         '--resume-section-spacing': computedStyle.getPropertyValue('--resume-section-spacing'),
         '--resume-item-spacing': computedStyle.getPropertyValue('--resume-item-spacing'),
-        '--resume-padding': computedStyle.getPropertyValue('--resume-padding'),
+        '--resume-padding-top': computedStyle.getPropertyValue('--resume-padding-top'),
+        '--resume-padding-bottom': computedStyle.getPropertyValue('--resume-padding-bottom'),
+        '--resume-padding-left': computedStyle.getPropertyValue('--resume-padding-left'),
+        '--resume-padding-right': computedStyle.getPropertyValue('--resume-padding-right'),
       } : {}
 
       const cssVarsString = Object.entries(cssVariables)
@@ -136,26 +139,30 @@ export function BuilderHeader({ isDirty }: BuilderHeaderProps) {
       ${cssVarsString}
     }
 
+    body,
+    body *,
+    body h1,
+    body h2,
+    body h3,
+    body h4,
+    body p,
+    body span,
+    body div {
+      font-family: var(--resume-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif) !important;
+      letter-spacing: var(--resume-letter-spacing, 0px) !important;
+    }
+
     body {
-      font-family: var(--resume-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif);
-      letter-spacing: var(--resume-letter-spacing, 0px);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       margin: 0;
       padding: 0;
     }
 
-    /* Page break settings - First page: no top margin, other pages: normal margins */
+    /* Page break settings - Remove all page margins, let template padding control spacing */
     @page {
-      margin: 10mm 8mm 10mm 8mm; /* top, right, bottom, left - reduced side margins */
+      margin: 0; /* No page margins - template padding controls all spacing */
       size: A4 portrait;
-    }
-
-    @page :first {
-      margin-top: 0; /* No top margin on first page */
-      margin-bottom: 10mm; /* Footer margin on first page */
-      margin-left: 8mm; /* Less side margin */
-      margin-right: 8mm; /* Less side margin */
     }
 
     /* Prevent page breaks inside important elements */
@@ -164,32 +171,32 @@ export function BuilderHeader({ isDirty }: BuilderHeaderProps) {
       break-inside: avoid !important;
     }
 
-    /* TYPOGRAPHY - Apply to all templates */
-    h1, .text-5xl, .text-4xl, .text-3xl {
+    /* TYPOGRAPHY - Apply to all templates with high specificity */
+    h1, .text-5xl, .text-4xl, h1.text-4xl, h1.text-5xl {
       font-size: var(--resume-heading-size, 24px) !important;
       line-height: var(--resume-line-height, 1.5) !important;
     }
 
-    h2, .text-2xl, .text-xl {
+    h2, .text-3xl, .text-2xl, .text-xl, h2.text-xl, h2.text-2xl, h2.text-3xl {
       font-size: var(--resume-subheading-size, 18px) !important;
       line-height: var(--resume-line-height, 1.5) !important;
     }
 
-    h3, .text-lg {
+    h3, h4, .text-lg, h3.text-lg, h4.text-base {
       font-size: calc(var(--resume-body-size, 14px) * 1.1) !important;
       line-height: var(--resume-line-height, 1.5) !important;
     }
 
-    p, .text-base {
+    p, .text-base, div, span {
       font-size: var(--resume-body-size, 14px) !important;
       line-height: var(--resume-line-height, 1.5) !important;
     }
 
-    .text-sm {
+    .text-sm, span.text-sm, div.text-sm, p.text-sm {
       font-size: calc(var(--resume-body-size, 14px) * 0.9) !important;
     }
 
-    .text-xs {
+    .text-xs, span.text-xs, div.text-xs {
       font-size: var(--resume-small-size, 12px) !important;
     }
 
@@ -202,18 +209,54 @@ export function BuilderHeader({ isDirty }: BuilderHeaderProps) {
       margin-top: var(--resume-item-spacing, 12px) !important;
     }
 
-    .p-16, .p-12, .p-8 {
-      padding: var(--resume-padding, 16px) !important;
+    /* PAGE PADDING - Dynamic padding system */
+    /* Override ALL template padding with custom values */
+
+    /* Single column templates - Apply padding to root div */
+    body > div:not(.flex) {
+      padding-top: var(--resume-padding-top, 50px) !important;
+      padding-bottom: var(--resume-padding-bottom, 50px) !important;
+      padding-left: var(--resume-padding-left, 50px) !important;
+      padding-right: var(--resume-padding-right, 50px) !important;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
     }
 
-    .px-16, .px-12, .px-8 {
-      padding-left: var(--resume-padding, 16px) !important;
-      padding-right: var(--resume-padding, 16px) !important;
+    /* Flex layout templates - Apply padding to child columns */
+    body > div.flex {
+      /* Remove padding from flex container */
+      padding: 0 !important;
+      /* Ensure flex container maintains structure across page breaks */
+      box-sizing: border-box !important;
     }
 
-    .py-16, .py-12, .py-8 {
-      padding-top: var(--resume-padding, 16px) !important;
-      padding-bottom: var(--resume-padding, 16px) !important;
+    body > div.flex > div {
+      /* Apply top/bottom padding to all columns */
+      padding-top: var(--resume-padding-top, 50px) !important;
+      padding-bottom: var(--resume-padding-bottom, 50px) !important;
+      /* Ensure padding is preserved across page breaks */
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+      box-sizing: border-box !important;
+    }
+
+    /* First column (sidebar) - add left padding */
+    body > div.flex > div:first-child {
+      padding-left: var(--resume-padding-left, 50px) !important;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    /* Last column (main content) - add right padding */
+    body > div.flex > div:last-child {
+      padding-right: var(--resume-padding-right, 50px) !important;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    /* Ensure all elements maintain box-sizing */
+    body, body * {
+      box-sizing: border-box !important;
     }
 
     /* Theme overrides for templates - Comprehensive color mapping */

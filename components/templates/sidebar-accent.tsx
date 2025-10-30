@@ -48,7 +48,35 @@ export function SidebarAccent({ data }: SidebarAccentProps) {
                 <span className="break-all">{basics.linkedin}</span>
               </div>
             )}
+            {basics.website && (
+              <div className="flex items-start gap-2">
+                <span>🌐</span>
+                <a
+                  href={basics.website}
+                  className="break-all hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {basics.website.replace(/^https?:\/\//, '')}
+                </a>
+              </div>
+            )}
           </div>
+          {basics.socials && basics.socials.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-3 text-xs">
+              {basics.socials.map((social) => (
+                <a
+                  key={social.id}
+                  href={social.url}
+                  className="hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {social.label}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Skills */}
@@ -57,14 +85,14 @@ export function SidebarAccent({ data }: SidebarAccentProps) {
           .map((section) => (
             <div key={section.id} className="mb-8">
               <h3 className="mb-4 border-b border-white/30 pb-2 text-sm font-bold uppercase tracking-wider">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
-                    {item.category && (
+                    {item.heading && (
                       <div className="mb-2 text-xs font-semibold opacity-90">
-                        {item.category}
+                        {item.heading}
                       </div>
                     )}
                     {item.tags && (
@@ -97,14 +125,14 @@ export function SidebarAccent({ data }: SidebarAccentProps) {
           .map((section) => (
             <div key={section.id} className="mb-6">
               <h3 className="mb-4 border-b border-white/30 pb-2 text-sm font-bold uppercase tracking-wider">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-2">
                 {section.items.map((item) => (
                   <div key={item.id} className="text-xs">
-                    <div className="font-semibold">{item.title}</div>
-                    {item.subtitle && (
-                      <div className="opacity-90">{item.subtitle}</div>
+                    <div className="font-semibold">{item.heading}</div>
+                    {item.subheading && (
+                      <div className="opacity-90">{item.subheading}</div>
                     )}
                   </div>
                 ))}
@@ -141,16 +169,16 @@ export function SidebarAccent({ data }: SidebarAccentProps) {
           .map((section) => (
             <div key={section.id} className="mb-6">
               <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-coral-600">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-4">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
                     <div className="mb-2 flex items-start justify-between">
                       <div>
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
                         <div className="text-sm font-semibold text-coral-600">
-                          {item.subtitle}
+                          {item.subheading}
                         </div>
                       </div>
                       <div className="text-right text-xs text-gray-600">
@@ -171,6 +199,18 @@ export function SidebarAccent({ data }: SidebarAccentProps) {
                           ))}
                         </ul>
                       )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-coral-100 px-2 py-0.5 text-xs text-coral-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -183,16 +223,16 @@ export function SidebarAccent({ data }: SidebarAccentProps) {
           .map((section) => (
             <div key={section.id} className="mb-6">
               <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-coral-600">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
                         <div className="text-sm text-coral-600">
-                          {item.subtitle}
+                          {item.subheading}
                         </div>
                       </div>
                       <div className="text-xs text-gray-600">
@@ -211,14 +251,26 @@ export function SidebarAccent({ data }: SidebarAccentProps) {
           .map((section) => (
             <div key={section.id} className="mb-6">
               <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-coral-600">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-2">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
-                    <h4 className="font-bold text-gray-900">{item.title}</h4>
+                    <h4 className="font-bold text-gray-900">{item.heading}</h4>
                     {item.description && (
                       <p className="text-sm text-gray-700">{item.description}</p>
+                    )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-coral-100 px-2 py-0.5 text-xs text-coral-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}

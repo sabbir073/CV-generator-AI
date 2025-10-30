@@ -49,7 +49,33 @@ export function GeometricModern({ data }: GeometricModernProps) {
                 {formatLocation(basics.location)}
               </span>
             )}
+            {basics.website && (
+              <a
+                href={basics.website}
+                className="flex items-center gap-2 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="h-1 w-1 rounded-full bg-white"></span>
+                {basics.website.replace(/^https?:\/\//, '')}
+              </a>
+            )}
           </div>
+          {basics.socials && basics.socials.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-3 text-sm">
+              {basics.socials.map((social) => (
+                <a
+                  key={social.id}
+                  href={social.url}
+                  className="hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {social.label}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -76,17 +102,17 @@ export function GeometricModern({ data }: GeometricModernProps) {
                 <div key={section.id}>
                   <div className="relative mb-4 pb-2">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                     <div className="absolute bottom-0 left-0 h-0.5 w-12 bg-teal-500"></div>
                   </div>
                   <div className="space-y-3">
                     {section.items.map((item) => (
                       <div key={item.id}>
-                        {item.category && (
+                        {item.heading && (
                           <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-teal-600">
                             <span className="h-2 w-2 rotate-45 bg-teal-500"></span>
-                            {item.category}
+                            {item.heading}
                           </div>
                         )}
                         {item.tags && (
@@ -120,7 +146,7 @@ export function GeometricModern({ data }: GeometricModernProps) {
                 <div key={section.id}>
                   <div className="relative mb-4 pb-2">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                     <div className="absolute bottom-0 left-0 h-0.5 w-12 bg-teal-500"></div>
                   </div>
@@ -128,11 +154,11 @@ export function GeometricModern({ data }: GeometricModernProps) {
                     {section.items.map((item) => (
                       <div key={item.id} className="text-sm">
                         <div className="font-semibold text-gray-900">
-                          {item.title}
+                          {item.heading}
                         </div>
-                        {item.subtitle && (
+                        {item.subheading && (
                           <div className="text-xs text-gray-600">
-                            {item.subtitle}
+                            {item.subheading}
                           </div>
                         )}
                       </div>
@@ -151,7 +177,7 @@ export function GeometricModern({ data }: GeometricModernProps) {
                 <div key={section.id}>
                   <div className="relative mb-4 pb-2">
                     <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                     <div className="absolute bottom-0 left-0 h-0.5 w-16 bg-teal-500"></div>
                   </div>
@@ -161,10 +187,10 @@ export function GeometricModern({ data }: GeometricModernProps) {
                         <div className="absolute left-0 top-2 h-3 w-3 rotate-45 bg-teal-500"></div>
                         <div className="mb-2">
                           <h4 className="font-bold text-gray-900">
-                            {item.title}
+                            {item.heading}
                           </h4>
                           <div className="text-sm font-semibold text-teal-600">
-                            {item.subtitle}
+                            {item.subheading}
                           </div>
                           <div className="text-xs text-gray-600">
                             {item.startDate} - {item.endDate || 'Present'}
@@ -181,6 +207,18 @@ export function GeometricModern({ data }: GeometricModernProps) {
                               ))}
                             </ul>
                           )}
+                        {item.techStack && item.techStack.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {item.techStack.map((tech, idx) => (
+                              <span
+                                key={idx}
+                                className="rounded bg-teal-100 px-2 py-0.5 text-xs text-teal-700"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -194,7 +232,7 @@ export function GeometricModern({ data }: GeometricModernProps) {
                 <div key={section.id}>
                   <div className="relative mb-4 pb-2">
                     <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                     <div className="absolute bottom-0 left-0 h-0.5 w-16 bg-teal-500"></div>
                   </div>
@@ -202,9 +240,9 @@ export function GeometricModern({ data }: GeometricModernProps) {
                     {section.items.map((item) => (
                       <div key={item.id} className="break-inside-avoid relative pl-6">
                         <div className="absolute left-0 top-2 h-3 w-3 rotate-45 bg-cyan-500"></div>
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
                         <div className="text-sm text-cyan-600">
-                          {item.subtitle}
+                          {item.subheading}
                         </div>
                         <div className="text-xs text-gray-600">
                           {item.startDate} - {item.endDate || 'Present'}
@@ -222,7 +260,7 @@ export function GeometricModern({ data }: GeometricModernProps) {
                 <div key={section.id}>
                   <div className="relative mb-4 pb-2">
                     <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                     <div className="absolute bottom-0 left-0 h-0.5 w-16 bg-teal-500"></div>
                   </div>
@@ -233,12 +271,24 @@ export function GeometricModern({ data }: GeometricModernProps) {
                         className="break-inside-avoid rounded-lg border-l-4 border-teal-500 bg-gray-50 p-3"
                       >
                         <h4 className="mb-1 font-bold text-gray-900">
-                          {item.title}
+                          {item.heading}
                         </h4>
                         {item.description && (
                           <p className="text-xs text-gray-600">
                             {item.description}
                           </p>
+                        )}
+                        {item.techStack && item.techStack.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {item.techStack.map((tech, idx) => (
+                              <span
+                                key={idx}
+                                className="rounded bg-teal-100 px-2 py-0.5 text-xs text-teal-700"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
                         )}
                       </div>
                     ))}

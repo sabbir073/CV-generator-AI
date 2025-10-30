@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { normalizeResumeData, validateResumeData } from '@/lib/utils/normalize-resume-data'
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,8 +16,8 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes)
 
     // Import pdf-parse dynamically (it's CommonJS)
-    const pdfParse = (await import('pdf-parse')).default
-    const pdfData = await pdfParse(buffer)
+    const pdfParse = (await import('pdf-parse')) as any
+    const pdfData = await (pdfParse.default || pdfParse)(buffer)
 
     // Extract text from PDF
     const extractedText = pdfData.text
@@ -43,15 +44,22 @@ export async function POST(request: NextRequest) {
 
 interface ResumeData {
   basics: {
-    name: string
+    fullName: string
     title: string
-    email: string
-    phone: string
-    location: string
+    summary: string
+    location: {
+      city?: string
+      country?: string
+    }
+    phone?: string
+    email?: string
     website?: string
-    linkedin?: string
-    github?: string
-    summary?: string
+    socials: Array<{
+      id: string
+      label: string
+      url: string
+    }>
+    photo?: string
   }
   sections: Array<{
     id: string
@@ -60,30 +68,61 @@ interface ResumeData {
     visible: boolean
     items: Array<{
       id: string
-      title?: string
-      subtitle?: string
-      description?: string
+      heading?: string
+      subheading?: string
+      location?: string
       startDate?: string
       endDate?: string
-      location?: string
-      url?: string
+      current?: boolean
+      description?: string
       descriptionBullets?: string[]
+      techStack?: string[]
       tags?: string[]
-      category?: string
+      link?: string
+      score?: string
       level?: string
     }>
+    order: number
   }>
 }
 
 Instructions:
-1. Extract all personal information (name, title, contact details)
-2. Identify and categorize sections (experience, education, projects, skills, etc.)
-3. Extract bullet points as arrays
-4. Extract skills, technologies as tags
-5. Generate unique IDs using format: type-timestamp-random
-6. Set all sections to visible: true
-7. Parse dates in a consistent format (e.g., "Jan 2020" or "2020-01")
-8. Return ONLY valid JSON, no explanations or markdown
+1. Extract fullName (complete name), not just "name"
+2. Extract professional title/headline
+3. Extract summary/objective statement
+4. Extract location as object with city and country separately (e.g., {city: "San Francisco", country: "USA"})
+5. Extract contact: email, phone, website
+6. Extract social links (LinkedIn, GitHub, Twitter, Portfolio, etc.) into socials array:
+   - Use id format: 'linkedin', 'github', 'twitter', 'portfolio', etc.
+   - Set label: 'LinkedIn', 'GitHub', 'Twitter', 'Portfolio', etc.
+   - Include full url
+7. Identify and categorize sections:
+   - experience: Work history
+   - education: Schools, degrees
+   - projects: Personal or professional projects
+   - skills: Technical skills, grouped by category
+   - certifications: Professional certifications
+   - awards: Honors and awards
+   - languages: Spoken languages with proficiency
+   - interests: Hobbies and interests
+   - publications: Papers, articles
+   - volunteer: Volunteer work
+8. For each section item:
+   - Use "heading" for primary name (Company name, School name, Project name, Skill category)
+   - Use "subheading" for secondary info (Job title, Degree, Role)
+   - Extract location if mentioned
+   - Parse dates consistently (e.g., "Jan 2020", "2020-01", "January 2020")
+   - Set "current" to true if position is ongoing (endDate is "Present", "Current", or similar)
+   - Split descriptions into "descriptionBullets" array (one bullet per array item)
+   - Extract technologies, tools, frameworks as "techStack" array for experience and projects
+   - For skills section, group related skills in "tags" array
+   - For education, include GPA or scores in "score" field (e.g., "3.8/4.0", "95%")
+   - For skills and languages, extract proficiency level in "level" field (e.g., "Expert", "Advanced", "Intermediate", "Beginner", "Native", "Fluent", "Professional")
+   - Include any URLs/links in "link" field
+9. Generate unique IDs using format: [type]-[random] (e.g., "exp-a1b2c3", "edu-x9y8z7")
+10. Set all sections visible: true
+11. Set section order: 0, 1, 2, 3... based on typical resume order (experience first, then education, projects, skills, etc.)
+12. Return ONLY valid JSON, no explanations, no markdown code blocks
 
 Resume Text:
 ${extractedText}
@@ -114,10 +153,23 @@ Return the parsed resume as JSON:`
 
     const parsedData = JSON.parse(jsonText)
 
+    // Normalize the parsed data to ensure it matches our schema
+    // This handles missing fields, wrong types, and legacy field names
+    const normalizedData = normalizeResumeData(parsedData)
+
+    // Validate the normalized data
+    const validation = validateResumeData(normalizedData)
+
+    // Log validation warnings (but still return data)
+    if (!validation.valid) {
+      console.warn('Resume data validation warnings:', validation.errors)
+    }
+
     return NextResponse.json({
       success: true,
-      data: parsedData,
+      data: normalizedData,
       extractedText: extractedText.substring(0, 500), // Return preview
+      warnings: validation.valid ? undefined : validation.errors,
     })
   } catch (error) {
     console.error('PDF parsing error:', error)

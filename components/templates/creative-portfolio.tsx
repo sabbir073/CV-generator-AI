@@ -50,7 +50,32 @@ export function CreativePortfolio({ data }: CreativePortfolioProps) {
               <span className="text-purple-500">⌂</span> {formatLocation(basics.location)}
             </span>
           )}
+          {basics.website && (
+            <a
+              href={basics.website}
+              className="flex items-center gap-1 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="text-purple-500">🌐</span> {basics.website.replace(/^https?:\/\//, '')}
+            </a>
+          )}
         </div>
+        {basics.socials && basics.socials.length > 0 && (
+          <div className="mx-auto mt-3 flex max-w-2xl flex-wrap justify-center gap-3 text-sm">
+            {basics.socials.map((social) => (
+              <a
+                key={social.id}
+                href={social.url}
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Summary Box */}
@@ -72,13 +97,13 @@ export function CreativePortfolio({ data }: CreativePortfolioProps) {
                 key={section.id}
                 className="rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 p-6 text-white shadow-lg"
               >
-                <h3 className="mb-4 text-lg font-bold">{section.title}</h3>
+                <h3 className="mb-4 text-lg font-bold">{section.titleOverride || section.title}</h3>
                 <div className="space-y-3">
                   {section.items.map((item) => (
                     <div key={item.id}>
-                      {item.category && (
+                      {item.heading && (
                         <div className="mb-2 text-xs font-semibold uppercase opacity-90">
-                          {item.category}
+                          {item.heading}
                         </div>
                       )}
                       {item.tags && (
@@ -111,14 +136,14 @@ export function CreativePortfolio({ data }: CreativePortfolioProps) {
             .map((section) => (
               <div key={section.id} className="rounded-2xl bg-white p-6 shadow-lg">
                 <h3 className="mb-3 text-lg font-bold text-purple-600">
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
                 <div className="space-y-2">
                   {section.items.map((item) => (
                     <div key={item.id} className="text-sm text-gray-700">
-                      <div className="font-semibold">{item.title}</div>
-                      {item.subtitle && (
-                        <div className="text-xs text-gray-500">{item.subtitle}</div>
+                      <div className="font-semibold">{item.heading}</div>
+                      {item.subheading && (
+                        <div className="text-xs text-gray-500">{item.subheading}</div>
                       )}
                     </div>
                   ))}
@@ -136,7 +161,7 @@ export function CreativePortfolio({ data }: CreativePortfolioProps) {
               <div key={section.id}>
                 <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-gray-800">
                   <span className="h-2 w-2 rounded-full bg-purple-500"></span>
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
                 <div className="space-y-4">
                   {section.items.map((item) => (
@@ -147,9 +172,9 @@ export function CreativePortfolio({ data }: CreativePortfolioProps) {
                       <div className="absolute left-0 top-0 h-full w-1 rounded-l-xl bg-gradient-to-b from-purple-500 to-blue-500"></div>
                       <div className="mb-2 flex items-start justify-between">
                         <div>
-                          <h4 className="font-bold text-gray-900">{item.title}</h4>
+                          <h4 className="font-bold text-gray-900">{item.heading}</h4>
                           <div className="text-sm font-semibold text-purple-600">
-                            {item.subtitle}
+                            {item.subheading}
                           </div>
                         </div>
                         <div className="rounded-full bg-purple-50 px-3 py-1 text-xs text-purple-600">
@@ -167,6 +192,18 @@ export function CreativePortfolio({ data }: CreativePortfolioProps) {
                             ))}
                           </ul>
                         )}
+                      {item.techStack && item.techStack.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {item.techStack.map((tech, idx) => (
+                            <span
+                              key={idx}
+                              className="rounded-full bg-white/20 px-3 py-1 text-xs backdrop-blur-sm"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -180,7 +217,7 @@ export function CreativePortfolio({ data }: CreativePortfolioProps) {
               <div key={section.id}>
                 <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-gray-800">
                   <span className="h-2 w-2 rounded-full bg-blue-500"></span>
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
                 <div className="space-y-3">
                   {section.items.map((item) => (
@@ -190,9 +227,9 @@ export function CreativePortfolio({ data }: CreativePortfolioProps) {
                     >
                       <div className="flex items-start justify-between">
                         <div>
-                          <h4 className="font-bold text-gray-900">{item.title}</h4>
+                          <h4 className="font-bold text-gray-900">{item.heading}</h4>
                           <div className="text-sm text-blue-600">
-                            {item.subtitle}
+                            {item.subheading}
                           </div>
                         </div>
                         <div className="text-xs text-gray-500">
@@ -212,7 +249,7 @@ export function CreativePortfolio({ data }: CreativePortfolioProps) {
               <div key={section.id}>
                 <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-gray-800">
                   <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   {section.items.map((item) => (
@@ -221,10 +258,22 @@ export function CreativePortfolio({ data }: CreativePortfolioProps) {
                       className="break-inside-avoid rounded-xl bg-gradient-to-br from-white to-purple-50 p-4 shadow-md"
                     >
                       <h4 className="mb-1 font-bold text-gray-900">
-                        {item.title}
+                        {item.heading}
                       </h4>
                       {item.description && (
                         <p className="text-xs text-gray-600">{item.description}</p>
+                      )}
+                      {item.techStack && item.techStack.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {item.techStack.map((tech, idx) => (
+                            <span
+                              key={idx}
+                              className="rounded-full bg-white/20 px-3 py-1 text-xs backdrop-blur-sm"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
                       )}
                     </div>
                   ))}

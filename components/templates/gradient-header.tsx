@@ -40,7 +40,32 @@ export function GradientHeader({ data }: GradientHeaderProps) {
               <span>⌂</span> {formatLocation(basics.location)}
             </span>
           )}
+          {basics.website && (
+            <a
+              href={basics.website}
+              className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 backdrop-blur-sm hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>🌐</span> {basics.website.replace(/^https?:\/\//, '')}
+            </a>
+          )}
         </div>
+        {basics.socials && basics.socials.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-3 text-sm">
+            {basics.socials.map((social) => (
+              <a
+                key={social.id}
+                href={social.url}
+                className="rounded-lg bg-white/10 px-3 py-1 backdrop-blur-sm hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
@@ -60,16 +85,16 @@ export function GradientHeader({ data }: GradientHeaderProps) {
           .map((section) => (
             <div key={section.id} className="mb-6">
               <h3 className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-lg font-bold uppercase tracking-wider text-transparent">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-4">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
                     <div className="mb-2 flex items-start justify-between">
                       <div>
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
                         <div className="text-sm font-semibold text-purple-600">
-                          {item.subtitle}
+                          {item.subheading}
                         </div>
                       </div>
                       <div className="text-right text-xs text-gray-600">
@@ -90,6 +115,18 @@ export function GradientHeader({ data }: GradientHeaderProps) {
                           ))}
                         </ul>
                       )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-gradient-to-r from-blue-100 to-purple-100 px-2 py-0.5 text-xs text-gray-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -104,14 +141,14 @@ export function GradientHeader({ data }: GradientHeaderProps) {
             .map((section) => (
               <div key={section.id}>
                 <h3 className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-lg font-bold uppercase tracking-wider text-transparent">
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
                 <div className="space-y-3">
                   {section.items.map((item) => (
                     <div key={item.id} className="break-inside-avoid">
-                      <h4 className="font-bold text-gray-900">{item.title}</h4>
+                      <h4 className="font-bold text-gray-900">{item.heading}</h4>
                       <div className="text-sm text-purple-600">
-                        {item.subtitle}
+                        {item.subheading}
                       </div>
                       <div className="text-xs text-gray-600">
                         {item.startDate} - {item.endDate || 'Present'}
@@ -128,14 +165,14 @@ export function GradientHeader({ data }: GradientHeaderProps) {
             .map((section) => (
               <div key={section.id}>
                 <h3 className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-lg font-bold uppercase tracking-wider text-transparent">
-                  {section.title}
+                  {section.titleOverride || section.title}
                 </h3>
                 <div className="space-y-3">
                   {section.items.map((item) => (
                     <div key={item.id} className="break-inside-avoid">
-                      {item.category && (
+                      {item.heading && (
                         <div className="mb-2 text-xs font-bold uppercase text-blue-600">
-                          {item.category}
+                          {item.heading}
                         </div>
                       )}
                       {item.tags && (
@@ -163,7 +200,7 @@ export function GradientHeader({ data }: GradientHeaderProps) {
           .map((section) => (
             <div key={section.id} className="mt-6">
               <h3 className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-lg font-bold uppercase tracking-wider text-transparent">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 {section.items.map((item) => (
@@ -171,9 +208,21 @@ export function GradientHeader({ data }: GradientHeaderProps) {
                     key={item.id}
                     className="break-inside-avoid rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 p-4"
                   >
-                    <h4 className="mb-1 font-bold text-gray-900">{item.title}</h4>
+                    <h4 className="mb-1 font-bold text-gray-900">{item.heading}</h4>
                     {item.description && (
                       <p className="text-xs text-gray-700">{item.description}</p>
+                    )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-gradient-to-r from-blue-100 to-purple-100 px-2 py-0.5 text-xs text-gray-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -193,16 +242,16 @@ export function GradientHeader({ data }: GradientHeaderProps) {
           .map((section) => (
             <div key={section.id} className="mt-6">
               <h3 className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-lg font-bold uppercase tracking-wider text-transparent">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-2">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-sm">
                     <span className="font-semibold text-gray-900">
-                      {item.title}
+                      {item.heading}
                     </span>
-                    {item.subtitle && (
-                      <span className="text-gray-700"> - {item.subtitle}</span>
+                    {item.subheading && (
+                      <span className="text-gray-700"> - {item.subheading}</span>
                     )}
                   </div>
                 ))}

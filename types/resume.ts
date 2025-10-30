@@ -19,6 +19,9 @@ export interface ResumeBasics {
   website?: string
   socials: SocialLink[]
   photo?: string
+  photoUrl?: string // Legacy support
+  linkedin?: string // Legacy support
+  github?: string // Legacy support
 }
 
 export interface SocialLink {
@@ -97,7 +100,10 @@ export interface TypographySettings {
 export interface SpacingSettings {
   sectionSpacing?: number
   itemSpacing?: number
-  padding?: number
+  paddingTop?: number
+  paddingBottom?: number
+  paddingLeft?: number
+  paddingRight?: number
 }
 
 export interface ColorScheme {

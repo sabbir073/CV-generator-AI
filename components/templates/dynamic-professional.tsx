@@ -53,7 +53,32 @@ export function DynamicProfessional({ data }: DynamicProfessionalProps) {
                   {formatLocation(basics.location)}
                 </span>
               )}
+              {basics.website && (
+                <a
+                  href={basics.website}
+                  className="rounded bg-white/20 px-3 py-1 backdrop-blur-sm hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {basics.website.replace(/^https?:\/\//, '')}
+                </a>
+              )}
             </div>
+            {basics.socials && basics.socials.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-3 text-sm">
+                {basics.socials.map((social) => (
+                  <a
+                    key={social.id}
+                    href={social.url}
+                    className="rounded bg-white/20 px-3 py-1 backdrop-blur-sm hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {social.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -80,15 +105,15 @@ export function DynamicProfessional({ data }: DynamicProfessionalProps) {
                 <div key={section.id}>
                   <div className="mb-3 -skew-x-6 transform bg-gradient-to-r from-orange-500 to-blue-600 px-3 py-2">
                     <h3 className="skew-x-6 transform text-sm font-bold uppercase tracking-wider text-white">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                   </div>
                   <div className="space-y-3">
                     {section.items.map((item) => (
                       <div key={item.id}>
-                        {item.category && (
+                        {item.heading && (
                           <div className="mb-1 text-xs font-bold text-orange-600">
-                            {item.category}
+                            {item.heading}
                           </div>
                         )}
                         {item.tags && (
@@ -122,18 +147,18 @@ export function DynamicProfessional({ data }: DynamicProfessionalProps) {
                 <div key={section.id}>
                   <div className="mb-3 -skew-x-6 transform bg-gradient-to-r from-orange-500 to-blue-600 px-3 py-2">
                     <h3 className="skew-x-6 transform text-sm font-bold uppercase tracking-wider text-white">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                   </div>
                   <div className="space-y-2">
                     {section.items.map((item) => (
                       <div key={item.id} className="text-sm">
                         <div className="font-semibold text-gray-900">
-                          {item.title}
+                          {item.heading}
                         </div>
-                        {item.subtitle && (
+                        {item.subheading && (
                           <div className="text-xs text-gray-600">
-                            {item.subtitle}
+                            {item.subheading}
                           </div>
                         )}
                       </div>
@@ -153,7 +178,7 @@ export function DynamicProfessional({ data }: DynamicProfessionalProps) {
                   <div className="mb-4 flex items-center gap-3">
                     <div className="h-1 w-16 bg-gradient-to-r from-orange-500 to-blue-600"></div>
                     <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                   </div>
                   <div className="space-y-4">
@@ -165,10 +190,10 @@ export function DynamicProfessional({ data }: DynamicProfessionalProps) {
                         <div className="mb-2 flex items-start justify-between">
                           <div>
                             <h4 className="font-bold text-gray-900">
-                              {item.title}
+                              {item.heading}
                             </h4>
                             <div className="text-sm font-semibold text-orange-600">
-                              {item.subtitle}
+                              {item.subheading}
                             </div>
                           </div>
                           <div className="text-xs text-gray-600">
@@ -186,6 +211,18 @@ export function DynamicProfessional({ data }: DynamicProfessionalProps) {
                               ))}
                             </ul>
                           )}
+                        {item.techStack && item.techStack.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {item.techStack.map((tech, idx) => (
+                              <span
+                                key={idx}
+                                className="rounded-sm bg-orange-100 px-2 py-0.5 text-xs text-orange-700"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -200,7 +237,7 @@ export function DynamicProfessional({ data }: DynamicProfessionalProps) {
                   <div className="mb-4 flex items-center gap-3">
                     <div className="h-1 w-16 bg-gradient-to-r from-orange-500 to-blue-600"></div>
                     <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                   </div>
                   <div className="space-y-3">
@@ -212,10 +249,10 @@ export function DynamicProfessional({ data }: DynamicProfessionalProps) {
                         <div className="flex items-start justify-between">
                           <div>
                             <h4 className="font-bold text-gray-900">
-                              {item.title}
+                              {item.heading}
                             </h4>
                             <div className="text-sm text-blue-600">
-                              {item.subtitle}
+                              {item.subheading}
                             </div>
                           </div>
                           <div className="text-xs text-gray-600">
@@ -236,17 +273,29 @@ export function DynamicProfessional({ data }: DynamicProfessionalProps) {
                   <div className="mb-4 flex items-center gap-3">
                     <div className="h-1 w-16 bg-gradient-to-r from-orange-500 to-blue-600"></div>
                     <h3 className="text-lg font-bold uppercase tracking-wider text-gray-900">
-                      {section.title}
+                      {section.titleOverride || section.title}
                     </h3>
                   </div>
                   <div className="space-y-3">
                     {section.items.map((item) => (
                       <div key={item.id} className="break-inside-avoid bg-gray-50 p-3">
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
                         {item.description && (
                           <p className="mt-1 text-sm text-gray-700">
                             {item.description}
                           </p>
+                        )}
+                        {item.techStack && item.techStack.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {item.techStack.map((tech, idx) => (
+                              <span
+                                key={idx}
+                                className="rounded-sm bg-orange-100 px-2 py-0.5 text-xs text-orange-700"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
                         )}
                       </div>
                     ))}

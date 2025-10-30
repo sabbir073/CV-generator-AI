@@ -61,7 +61,35 @@ export function ExecutiveElite({ data }: ExecutiveEliteProps) {
               <span className="break-all">{basics.linkedin}</span>
             </div>
           )}
+          {basics.website && (
+            <div className="flex items-start gap-2">
+              <span className="text-amber-500">🌐</span>
+              <a
+                href={basics.website}
+                className="break-all hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {basics.website.replace(/^https?:\/\//, '')}
+              </a>
+            </div>
+          )}
         </div>
+        {basics.socials && basics.socials.length > 0 && (
+          <div className="mb-8 flex flex-wrap gap-3 text-sm">
+            {basics.socials.map((social) => (
+              <a
+                key={social.id}
+                href={social.url}
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+              </a>
+            ))}
+          </div>
+        )}
 
         {/* Skills */}
         {sections
@@ -69,14 +97,14 @@ export function ExecutiveElite({ data }: ExecutiveEliteProps) {
           .map((section) => (
             <div key={section.id} className="mb-6">
               <h3 className="mb-4 border-b border-amber-500 pb-2 text-lg font-bold uppercase tracking-wider">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id}>
-                    {item.category && (
+                    {item.heading && (
                       <div className="mb-1 text-xs font-semibold uppercase text-amber-500">
-                        {item.category}
+                        {item.heading}
                       </div>
                     )}
                     {item.tags && (
@@ -126,16 +154,16 @@ export function ExecutiveElite({ data }: ExecutiveEliteProps) {
           .map((section) => (
             <div key={section.id} className="mb-6">
               <h3 className="mb-4 text-lg font-bold uppercase tracking-wide text-gray-900">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-4">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
                     <div className="mb-1 flex items-start justify-between">
                       <div>
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
                         <div className="text-sm font-semibold text-amber-600">
-                          {item.subtitle}
+                          {item.subheading}
                         </div>
                       </div>
                       <div className="text-right text-xs text-gray-600">
@@ -155,6 +183,18 @@ export function ExecutiveElite({ data }: ExecutiveEliteProps) {
                         ))}
                       </ul>
                     )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-800"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -167,15 +207,15 @@ export function ExecutiveElite({ data }: ExecutiveEliteProps) {
           .map((section) => (
             <div key={section.id} className="mb-6">
               <h3 className="mb-4 text-lg font-bold uppercase tracking-wide text-gray-900">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-3">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="font-bold text-gray-900">{item.title}</h4>
-                        <div className="text-sm text-amber-600">{item.subtitle}</div>
+                        <h4 className="font-bold text-gray-900">{item.heading}</h4>
+                        <div className="text-sm text-amber-600">{item.subheading}</div>
                       </div>
                       <div className="text-right text-xs text-gray-600">
                         {item.startDate} - {item.endDate || 'Present'}
@@ -197,13 +237,28 @@ export function ExecutiveElite({ data }: ExecutiveEliteProps) {
           .map((section) => (
             <div key={section.id} className="mb-6">
               <h3 className="mb-3 text-lg font-bold uppercase tracking-wide text-gray-900">
-                {section.title}
+                {section.titleOverride || section.title}
               </h3>
               <div className="space-y-2">
                 {section.items.map((item) => (
                   <div key={item.id} className="break-inside-avoid text-sm text-gray-700">
-                    <span className="font-semibold">{item.title}</span>
-                    {item.subtitle && <span> - {item.subtitle}</span>}
+                    <span className="font-semibold">{item.heading}</span>
+                    {item.subheading && <span> - {item.subheading}</span>}
+                    {item.description && (
+                      <p className="mt-1 text-xs text-gray-600">{item.description}</p>
+                    )}
+                    {item.techStack && item.techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.techStack.map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-800"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

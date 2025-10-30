@@ -11,7 +11,20 @@
       "Bash(timeout /t 3 /nobreak)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(for file in modern-professional-plus.tsx professional-clean.tsx sidebar-accent.tsx split-column.tsx tech-innovator.tsx timeline-cv.tsx)",
+      "Bash(do echo \"Processing $file\")",
+      "Bash(done)",
+      "Bash(for file in professional-clean.tsx sidebar-accent.tsx split-column.tsx tech-innovator.tsx timeline-cv.tsx)",
+      "Bash(do)",
+      "Bash(echo:*)",
+      "Bash(timeout:*)",
+      "Bash(tasklist:*)",
+      "Bash(for file in modern-professional.tsx professional-clean.tsx sidebar-accent.tsx split-column.tsx tech-innovator.tsx timeline-cv.tsx)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm run build:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []

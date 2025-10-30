@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { ResumeData, ResumeSection, ResumeItem, SectionType } from '@/types/resume'
 import { defaultResumeData } from '@/data/default-resume'
+import { normalizeResumeData } from '@/lib/utils/normalize-resume-data'
 
 interface ResumeStore {
   // State
@@ -188,17 +189,22 @@ export const useResumeStore = create<ResumeStore>()(
         set((state) => ({
           resumeData: {
             ...state.resumeData,
-            metadata: { ...state.resumeData.metadata, ...metadata },
+            metadata: { ...state.resumeData.metadata!, ...metadata },
           },
           isDirty: true,
         })),
 
       // Utility Actions
-      loadResumeData: (data) =>
+      loadResumeData: (data) => {
+        // Normalize the data to handle missing fields, wrong types, and legacy formats
+        const normalizedData = normalizeResumeData(data)
+
         set({
-          resumeData: data,
+          resumeData: normalizedData,
+          selectedTemplateId: normalizedData.metadata?.templateId || 'modern-professional',
           isDirty: false,
-        }),
+        })
+      },
 
       resetResume: () =>
         set({
